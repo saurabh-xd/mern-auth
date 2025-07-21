@@ -17,3 +17,10 @@ app.get('/', (req,res)=> res.send("hello"))
 
 app.listen(port, ()=> console.log(`server started on PORT: localhost:${port}`)
 )
+
+
+import authRouter from "./routes/authRoutes.js";
+import userRouter from "./routes/userRoutes.js";
+
+app.use("/api/auth/", authRouter)
+app.use("/api/user/", userRouter)
