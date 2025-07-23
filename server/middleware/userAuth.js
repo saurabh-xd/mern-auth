@@ -1,31 +1,36 @@
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 
-const userAuth = async (req, res, next)=>{
-    const {token} = req.cookies;
+const userAuth = async (req, res, next) => {
+    const { token } = req.cookies;
+   
+    
 
-    if(!token){
-        return res.json({success: false, message: 'not authorized. login again'})
-
+    // Check if token is missing
+    if (!token) {
+        return res.status(401).json({ success: false, message: 'Not authorized. Please log in.' });
     }
 
     try {
-
-
-       
+        console.log(token);
+        console.log(process.env.JWT_SECRET);
         
-        const tokenDecode = jwt.verify(token, process.env.JWT_SECRET)
         
-        if(tokenDecode.id){
-            req.body.userId = tokenDecode.id
-        }else{
-            return res.json({ success: false, message: 'not authorized login again'})
+        // Verify token using JWT_SECRET
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(decoded);
+        
+        // If token is valid, attach userId to request body
+        if (decoded?.id) {
+            req.body.userId = decoded.id;
+            next(); // Go to next middleware or route
+        } else {
+            return res.status(401).json({ success: false, message: 'Invalid token. Please log in again.' });
         }
 
-        next();
     } catch (error) {
-        res.json({success: false, message: 'line 23'})
-
+        // Token expired, tampered, or invalid
+        return res.status(401).json({ success: false, message: 'Token verification failed.' });
     }
-}
+};
 
 export default userAuth;
