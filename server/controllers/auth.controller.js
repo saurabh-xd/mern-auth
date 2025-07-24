@@ -113,10 +113,20 @@ return res.json({success: true, message: "logged out"})
 
 export const sendVerifyOtp = async (req, res)=>{
     try{
-
-        const {userId} = req.body;
+ 
+        const { userId } = req.userId;
+        
+        
+        
+        if(!userId) {
+            return res.json({success: false, message: 'User ID is required'});
+        }
 
         const user = await userModel.findById(userId);
+
+        if(!user){
+    return res.json({success: false, message: 'User not found'});
+}
 
         if(user.isAccountVerified){
             return res.json({success: false, message: "account already verified" })
@@ -142,7 +152,8 @@ export const sendVerifyOtp = async (req, res)=>{
 
     }
     catch(error){
-        res.json({success: false, message: '144 controller'});
+         console.error('Send verify OTP error:', error);
+        res.json({success: false, message: error.message});
     }
 }
 
