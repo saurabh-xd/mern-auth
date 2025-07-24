@@ -8,7 +8,7 @@ const Navbar = () => {
 
 
   return (
-    <div className='w-full flex justify-between items-center p-4 bg sm:p-6 sm:px-24 absolute top-0 bg-amber-200'>
+    <div className='w-full flex justify-between items-center p-4 bg sm:p-6 sm:px-24 absolute top-0 '>
         <img src={assets.logo} alt="" className='w-28 sm:w-32'/>
 
         <button onClick={()=>navigate('/login')}
