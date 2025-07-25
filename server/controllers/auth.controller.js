@@ -113,8 +113,10 @@ return res.json({success: true, message: "logged out"})
 
 export const sendVerifyOtp = async (req, res)=>{
     try{
+
+       
  
-        const { userId } = req.userId;
+        const  userId  = req.userId;
         
         
         
@@ -158,7 +160,8 @@ export const sendVerifyOtp = async (req, res)=>{
 }
 
 export const verifyEmail = async (req,res) =>{
-    const {userId, otp} = req.body;
+     const userId = req.userId;
+    const {otp} = req.body;
 
     if(!userId || !otp){
         return res.json({success: false, message: 'Missing Details'});
