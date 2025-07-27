@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { assets } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
@@ -57,12 +57,14 @@ const onSubmitHandler = async(e)=>{
   }
 }
 
-
+useEffect(()=>{
+  isLoggedin && userData && userData.isAccountVerified && navigate('/')
+}, [isLoggedin, userData]) 
 
 
   return (
     <div className='flex items-center justify-center min-h-screen 
-    bg-gradient-to-br from-blue-200 to purple-400'>
+    bg-gradient-to-br from-blue-200 to-purple-400'>
 
  <img
         onClick={() => navigate("/")}
