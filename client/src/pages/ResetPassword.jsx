@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ResetPassword = () => {
 
@@ -12,11 +13,12 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [newPassword, setnewPassword] = useState("");
-  const [isEmailSent, setisEmailSent] = useState('')
-  const [otp, setotp] = useState(0)
+  const [isEmailSent, setisEmailSent] = useState(false)
+  const [otp, setotp] = useState("")
   const [isOtpSubmitted, setisOtpSubmitted] = useState(false)
 
   const inputRefs = React.useRef([])
+  
   
   const handleInput = (e, index)=>{
     if(e.target.value.length > 0 && index < inputRefs.current.length -1){
@@ -40,7 +42,7 @@ const ResetPassword = () => {
     })
   }
 
-  const onSubmitEmail = async ()=>{
+  const onSubmitEmail = async (e)=>{
     e.preventDefault();
     try {
       const {data} = await axios.post(backendUrl + '/api/auth/send-reset-otp', 
@@ -49,21 +51,42 @@ const ResetPassword = () => {
       data.success ? toast.success(data.message) : toast.error(data.message)
       data.success && setisEmailSent(true)
     } catch (error) {
-      toast.error(error.meessage)
+      toast.error(error.message)
+    }
+  }
+
+  const onSubmitOTP = async (e)=>{
+    e.preventDefault();
+    const otpArray = inputRefs.current.map(input => input.value)
+    setotp(otpArray.join(''))
+    setisOtpSubmitted(true)
+  }
+
+  const onSubmitNewPassword = async (e) =>{
+    e.preventDefault();
+
+    try {
+
+      const {data} = await axios.post(backendUrl + '/api/auth/reset-password', {email, otp, newPassword})
+      data.success ? toast.success(data.message) : toast.error(data.message)
+      data.success && navigate('/login')
+      
+    } catch (error) {
+      toast.error(error.message)
     }
   }
 
   return (
     <div
       className="flex items-center justify-center min-h-screen 
-    bg-gradient-to-br from-blue-200 to purple-400"
+    bg-gradient-to-br from-blue-200 to-purple-400"
     >
       <img
         onClick={() => navigate("/")}
         src={assets.logo}
         className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
       />
-
+ 
       {!isEmailSent &&
 
       <form onSubmit={onSubmitEmail} className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
@@ -78,7 +101,7 @@ const ResetPassword = () => {
           <input
             type="email"
             placeholder="Email id"
-            className="bg-transparent outline-none text-white"
+            className="bg-transparent outline-none text-white w-full"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -96,6 +119,7 @@ const ResetPassword = () => {
 
 {!isOtpSubmitted && isEmailSent &&
       <form
+      onSubmit={onSubmitOTP}
         
         className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
       >
@@ -134,7 +158,9 @@ const ResetPassword = () => {
 
   { isOtpSubmitted && isEmailSent &&
             
-      <form className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
+      <form 
+      onSubmit={onSubmitNewPassword}
+      className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
         <h1 className="text-white text-2xl font-semibold text-center mb-4">
           New password
         </h1>

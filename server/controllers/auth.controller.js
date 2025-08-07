@@ -228,7 +228,7 @@ export const sendResetOtp = async (req, res)=>{
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'password reset otp',
-            text: `Your OTP for resetting your password is ${otp}. `
+            text: `Your OTP for resetting your password is ${otp}.`
 
         }
 
