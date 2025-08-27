@@ -11,7 +11,7 @@ const app = express();
 const port = process.env.PORT || 4000
 connectDB();
 
-const allowedOrigins = ['https://mern-auth-vbcd.onrender.com']
+const allowedOrigins = ['mern-auth-iota-lilac.vercel.app']
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
